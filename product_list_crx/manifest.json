@@ -1,0 +1,53 @@
+
+{
+    "manifest_version": 2,
+    "name": "listcrawl",
+    "version": "1.0.0",
+    "description": "amz listcrawl",
+    "author": "wjryours",
+    "icons": {
+        "48": "48.png",
+        "128": "48.png"
+    },
+    "browser_action": {
+        "default_icon": "48.png",
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "persistent": true,
+        "scripts": [ "commons.js", "jquery-3.6.0.min.js", "PaserConf.js", "extension-reload.js","background2.js" ]
+
+    },
+    "commands": {
+        "Ctrl+M": {
+            "suggested_key": {
+                "default": "Ctrl+M",
+                "mac": "Command+M"
+            },
+            "description": "Ctrl+M."
+        }
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "content-script.js"
+            ],
+            "run_at": "document_start"
+        }
+    ],
+    "permissions": [
+        "management",
+        "contextMenus", // 右键菜单
+        "tabs", // 标签
+        "notifications", // 通知
+        "webRequest", // web 请求
+        "webRequestBlocking", // 阻塞式 web 请求
+        "storage", // 插件本地存储
+        "http://*/*", // 可以通过 executeScript 或者 insertCSS 访问的网站
+        "https://*/*" // 可以通过 executeScript 或者 insertCSS 访问的网站
+    ],
+    "content_security_policy": "script-src 'self' http://127.0.0.1:8000/product/post; object-src 'self'"
+}

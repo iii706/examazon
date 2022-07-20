@@ -1,0 +1,30 @@
+{
+   "author": "Cristian Lupașcu",
+   "background": {
+      "persistent": true,
+      "scripts": [ "blocker.js" ]
+   },
+   "browser_action": {
+      "default_icon": {
+         "128": "images/icon128.png",
+         "16": "images/icon16.png",
+         "48": "images/icon48.png"
+      },
+      "default_popup": "popup.html",
+      "default_title": "HTTP Request Blocker"
+   },
+   "description": "This extension blocks HTTP Request based on configurable URL patterns.",
+   "homepage_url": "https://github.com/clupasq/ChromeHttpRequestBlocker",
+   "icons": {
+      "128": "images/icon128.png",
+      "16": "images/icon16.png",
+      "48": "images/icon48.png"
+   },
+   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjRZLQh4T0DgCFoKE9jZH9WLJ1EtjK4Oo+EQ/Nk9h7Hk2aDVFQKOC69OCyA3ESvrJXyikcalrCs7tdlQkozC8PVDDoGhHprjEgyV2DNz/zGktiZWvBlF3eH58DsezClal6oEssLwYyXLDgcZyio/C866KH78hLVAhQUr5dcq3P7njrJXRrKLfdnHOW+E+xVtrvCqT68+nQheyELmX99Bo6y+YCsOJ6Rvm53vWsfb5IjP1fABYzjHEDsU4H+gIQeftr4kjq6ScpetooMl9udPfn3WO/pR5CXRscrbtFuMedIVNLcFki+zBuYA7tKh/gUXRiBCO3ICJQ/VXZah1pjCKAQIDAQAB",
+   "manifest_version": 2,
+   "name": "HTTP Request Blocker",
+   "permissions": [ "webRequest", "webRequestBlocking", "http://*/*", "https://*/*", "storage" ],
+   "short_name": "HTTPRequestBlocker",
+   "update_url": "https://clients2.google.com/service/update2/crx",
+   "version": "1.0.6"
+}
