@@ -4,6 +4,17 @@ var add_seller_info_url = "http://127.0.0.1:8000/product/add_seller_info/"
 var add_seller_re_asins_url = "http://127.0.0.1:8000/product/add_seller_re_asins/"
 
 
+function chrome_reload(time){
+    function sleep (time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
+    }
+
+    // 用法
+    sleep(time).then(() => {
+        chrome.runtime.reload()
+    })
+}
+
 let detailRequest = {
     state: ['token1','token2','token3','token4'],  // 默认三个令牌 最多可并发发送三次请求
     queue: [],   // 请求队列
@@ -35,8 +46,17 @@ let detailRequest = {
             if (stop_flag == true){
                product_url = 'https://www.amazon.com/dp/'+item.asin
                item.request(product_url).then(res => {
+
+
                 var jqueryObj = $(res);
 
+                var title = jqueryObj.find("h4").text()
+
+
+                if(title == "Enter the characters you see belowType the characters you see in this image:"){
+                    console.log(title,'status,200 web block!!')
+                    chrome_reload(50000)
+                }
                 var default_Paser = product_Paser
                 var mobile_flag = false
                 var title_ret = jqueryObj.find("#productTitle")//判断是否是手机页面
@@ -102,7 +122,7 @@ let detailRequest = {
                             }
                         }
                     }
-                    if(asins.size > 0){
+                    if(asins.size > 100000){
                         var asin_str = Array.from(asins).join("|")
                         console.log("关联的asins:",asin_str)
                         let options = {
@@ -136,16 +156,7 @@ let detailRequest = {
                 }
 
                 if (this.state.length == 4){
-
-                    function sleep (time) {
-                      return new Promise((resolve) => setTimeout(resolve, time));
-                    }
-
-                    // 用法
-                    sleep(10000).then(() => {
-                        chrome.runtime.reload()
-                    })
-
+                    chrome_reload(3000)
                 }
 
 
@@ -211,14 +222,21 @@ function callback(res){
        console.log("没有获取到需要抓取的产品链接");
     }
 }
+
 fetch(get_seller_asins).then(
     response => response.json()
-).then(
-    res=>callback(res)
-);
+    ).then(
+        res=>callback(res)
+    );
 
+function sleep (time) {
+  return new Promise((resolve) => setInterval(resolve, time));
+}
 
-
+// 用法
+sleep(50000).then(() => {
+   chrome.runtime.reload()
+})
 
 
 
