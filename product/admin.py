@@ -4,9 +4,17 @@ from product.models import Product,Rank,Review,SellerBase,SellerDetail,Url,UrlTy
 
 from django.contrib import admin
 
+
+
 admin.site.site_title="亚马逊产品数据"
 admin.site.site_header="亚马逊产品数据管理"
 admin.site.index_title="欢迎登陆，选择以下信息进入："
+
+from django.utils.translation import ugettext_lazy as _
+
+
+
+
 
 #@admin.register(UrlType)
 class UrlTypeAdmin(admin.ModelAdmin):
@@ -53,8 +61,26 @@ class RankAdmin(admin.ModelAdmin):
 
 @admin.register(SellerBase)
 class SellerBaseAdmin(admin.ModelAdmin):
+
+    class CountryListFilter(admin.SimpleListFilter):
+        title = _(u'卖家所在国家')
+        parameter_name = 'country'
+
+        def lookups(self, request, model_admin):
+            return (
+                ('0', _(u'中国卖家')),
+                ('1', _(u'非中国卖家')),
+            )
+
+        def queryset(self, request, queryset):
+            if self.value() == '0':
+                return queryset.filter(country='CN')
+            if self.value() == '1':
+                return queryset.filter().exclude(country='CN')
+
     list_display = ['id','SELL_LINK','brand_name','country','last_product_counts','last_days_30_ratings','last_days_90_ratings','last_year_ratings','last_life_ratings','show_add_time','show_mod_time']
-    list_filter = ['country','display']
+    # 激活自定义过滤器
+    list_filter = (CountryListFilter,)
 
     def SELL_LINK(self,obj):
         return format_html("<a href='https://www.amazon.com/s?me={seller_id}&marketplaceID=ATVPDKIKX0DER' target='blank'>{seller_id}</a>",seller_id=obj.seller_id)
