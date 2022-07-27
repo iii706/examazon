@@ -13,18 +13,21 @@ django.setup()
 from product.models import SellerBase,SellerDetail
 from django.utils import timezone
 
-url = 'https://www.amazon.com/s?i=merchant-items&me=A2GUMCXR7HBXM2&page=2&marketplaceID=ATVPDKIKX0DER&qid=1658676506&ref=sr_pg_2'
+url = 'https://www.amazon.com/s?i=merchant-items&me=AWZ6H68STFCI4&marketplaceID=ATVPDKIKX0DER&qid=1658906458&ref=sr_pg_1'
+#url = 'http://httpbin.org/cookies'
 
 scraper = cloudscraper.create_scraper(
                 browser={
                     'browser': 'chrome',
                     'platform': 'linux',
                     'desktop': True,
-
                 }
             )
-
-res = scraper.get(url)
+headers = {
+    'Content-Type' : 'text/html;charset=UTF-8',
+    'Cookie':'session-id=145-6781031-6397039; i18n-prefs=USD; ubid-main=135-5899715-9584050; lc-main=en_US; session-id-time=2082787201l; '
+}
+res = scraper.get(url,headers=headers)
 print(res.status_code)
-with open("asin.html",'a+',encoding='utf-8') as f:
+with open('asin.html','a+',encoding='utf-8') as f:
     f.write(res.text)
