@@ -1,12 +1,9 @@
 let detail_start_flag = true;
 let stop_flag = true;
-let page_start = 1;
-let page_end = 200;
 let min_review_counts = 300;
 let max_rank = 60000;
-let add_date_year_filter = ['2021','2022']  //合适年份
-let list_url = "";
-let list_urls = [];
+let add_date_year_filter = ['2022']  //合适年份
+
 
 let seller_Paser = {
 	'brand_name':['#sellerName-rd'],
@@ -20,7 +17,7 @@ let seller_Paser = {
 
 let mobile_product_Paser = {
 	'title':['#title'],
-	'image':['#main-image'],
+	'image':['#main-image',"#landingImage"],
 	'price':['span.a-price.aok-align-center.reinventPricePriceToPayMargin.priceToPay > span.a-offscreen'
 			],
 	'desc':["#productDetails_secondary_view_div"],
@@ -106,7 +103,7 @@ function paserDesc(str,mobile_flag){
                 if(new_texts.indexOf("Best Sellers Rank") != -1){
                     var rank = $.trim(new_texts.replace("Best Sellers Rank","").split(' in ')[0].replace('#', '').replace(',', ''))
                     rank = parseInt(rank)
-                    //console.log("rank是：",rank)
+                    console.log("rank是：",rank)
                     if(rank >= max_rank){ //设置最大的排名：
                         return "";
                     }

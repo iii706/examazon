@@ -1,7 +1,15 @@
-var count = '10'
-var get_asin_url = "http://127.0.0.1:8000/product/get_asin_url/?count="+count
+var get_asin_url = "http://127.0.0.1:8000/product/get_product_asins/"
 var product_content_post_url = "http://127.0.0.1:8000/product/post/"
+function chrome_reload(time){
+    function sleep (time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
+    }
 
+    // 用法
+    sleep(time).then(() => {
+        chrome.runtime.reload()
+    })
+}
 
 let detailRequest = {
     state: ['token1','token2','token3','token4'],  // 默认三个令牌 最多可并发发送三次请求
@@ -94,7 +102,7 @@ let detailRequest = {
                 }
 
                 if (this.state.length == 4){
-                    chrome.runtime.reload();
+                    chrome_reload(5000);
                 }
                 }).catch(e => {
                     if (e.status === 404) {
@@ -147,8 +155,8 @@ function callback(res){
             }
             var request_obj = {
                 request:f1,
-                asin:asins[i],
-                //asin:'B0B3NG5TMM',
+                //asin:asins[i],
+                asin:'B09TBJ2T6S',
             }
             detailRequest.pushQueue(request_obj);
         }

@@ -150,7 +150,7 @@ PRODUCT_FILTER = 'product_filter' #产品监控已采集过滤，redis set，需
 SELLER_WAIT = "seller_wait" #卖家id信息采集等待队列，
 SELLER_FILTER = 'seller_filter' #采集卖家id时用，过滤用，不删除
 
-URL_COUNT = 50 #默认每次取的URL或asins的数量
+URL_COUNT = 1 #默认每次取的URL或asins的数量
 ASIN_EXPIRE_DAY = 1#产品监控采集过期天数，默认为1天，超过1天可以重新采集
 
 REDIS_IP = '106.54.94.94'

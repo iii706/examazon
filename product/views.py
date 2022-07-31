@@ -51,7 +51,7 @@ def get_seller_asins(request):
 #获取采集卖家id的产品asins
 #/product/get_product_asins
 def get_product_asins(request):
-    asins_ret = settings.REDIS_CONN.srandmember(settings.PRODUCT_WAIT,number=settings.URL_COUNT)
+    asins_ret = settings.REDIS_CONN.zrange(settings.PRODUCT_WAIT,0,settings.URL_COUNT)
     if len(asins_ret) > 0:
         return HttpResponse(json.dumps({"msg":1,"asins":[i.decode() for i in asins_ret]}))
     else:
@@ -183,29 +183,17 @@ def product_content_post(request):
         settings.REDIS_CONN.srem(settings.DETAIL_URL_QUEUE, asin)
         return HttpResponse(json.dumps({"msg": 0}))
 
-    if data_ret == 3200: #只抓取卖家id:
-        seller_id = data["seller_id"]
-        seller, b = SellerBase.objects.get_or_create(seller_id=seller_id)
-        settings.REDIS_BL.bfMAdd(settings.SELLER_ASIN_FILTER, asin)
-        settings.REDIS_CONN.srem(settings.SELLER_URL_QUEUE, asin)
-        return HttpResponse(json.dumps({"msg": 1,'ret':3200}))
-
-    if data_ret == 3404: #抓取卖家id出现404
-        settings.REDIS_BL.bfMAdd(settings.SELLER_ASIN_FILTER, asin)
-        settings.REDIS_CONN.srem(settings.SELLER_URL_QUEUE, asin)
-        return HttpResponse(json.dumps({"msg": 0, 'ret': 3404}))
-
     #print("asin",asin)
 
     seller_id = data["seller_id"]
     seller, b = SellerBase.objects.get_or_create(seller_id=seller_id)
     title = data['title']
-    image = data['image']
+    try:
+        image = data['image']
+    except Exception as e:
+        image = ''
     price = data['price'].replace("$","").replace("US","")
     desc = data['desc']
-
-
-
 
     desc = desc.replace("\u200e",'')
     desc = desc.replace("\u200e",'')
@@ -271,8 +259,7 @@ def product_content_post(request):
     asin = data['asin']
     #print('asin2:',asin)
     if asin != "": #ret为0，1都要删除asin的key
-        settings.REDIS_BL.cfAddNX(settings.DETSIL_URL_FILTER, asin)
-        settings.REDIS_CONN.srem(settings.DETAIL_URL_QUEUE, asin)
+        settings.REDIS_CONN.zrem(settings.PRODUCT_WAIT,asin)
 
     if cat != "#NA" and data_ret == 1:
         p,b = Product.objects.get_or_create(asin=asin,defaults=defaults)

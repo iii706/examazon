@@ -23,11 +23,22 @@ yesterday_score = int(time.mktime((datetime.now() + timedelta(days=-1)).timetupl
 today_score = int(time.mktime(datetime.now().timetuple()))
 asins =  ['B09TSGH54J', 'B0B18JBRXW', 'B09XF6NVC4', 'B09YLPFNGH', 'B09QHX2BZ5', 'B09YXB5T8T', 'B09WRY4TMH', 'B09WXLRD9B', 'B0B1VB6657', 'B0B27Y4W3P', 'B09YMJPJCK', 'B09XQR12FV', 'B09YXRSRC3', 'B09YGV41SS', 'B09VK9RYNM', 'B09V2JVWD9', 'B09Y5P5MRH', 'B0B1V628W7', 'B09SWCZW7M', 'B09Z281KSK', 'B09WTXGFMB', 'B09WQZS6JX', 'B0B19WY9MQ', 'B08X6FZDZM']
 
-for asin in asins:
-    # ret = REDIS_CONN.sadd(SELLER_WAIT,asin)
-    # print(ret)
-    print(REDIS_CONN.sismember(SELLER_WAIT, asin))
+ret = REDIS_CONN.zrange(PRODUCT_WAIT,0,10)
+print(ret)
 
+asin = 'B09GFT2H75'
+
+ret = REDIS_CONN.zrem(PRODUCT_WAIT,asin)
+print('删除结果',ret)
+
+
+# for asin in asins:
+#     # ret = REDIS_CONN.sadd(SELLER_WAIT,asin)
+#     # print(ret)
+#     today_score = int(time.mktime(datetime.now().timetuple()))
+#     pipe.zadd(PRODUCT_WAIT, {asin: today_score}, nx=True, ch=True)
+#
+# pipe.execute()
 
 
 # ret2 = REDIS_CONN.zremrangebyscore(PRODUCT_FILTER,0,yesterday_score-5)

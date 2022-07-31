@@ -10,9 +10,9 @@ admin.site.site_title="亚马逊产品数据"
 admin.site.site_header="亚马逊产品数据管理"
 admin.site.index_title="欢迎登陆，选择以下信息进入："
 
-from django.utils.translation import ugettext_lazy as _
+#from django.utils.translation import ugettext_lazy as _
 
-
+from django.utils.translation import gettext_lazy as _
 
 
 

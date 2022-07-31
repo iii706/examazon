@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 import cloudscraper
-from datetime import datetime
+from datetime import datetime,timedelta
 from lxml import etree
 import os,sys
 import time
@@ -29,27 +30,33 @@ def get_page_content(seller_id):
             )
 
             # scraper = cloudscraper.create_scraper()
-            res = scraper.get('https://www.amazon.com/sp?ie=UTF8&seller=%s&isAmazonFulfilled=1' % seller_id, timeout=5)
-            print(res.status_code)
+            res = scraper.get('https://www.amazon.com/sp?ie=UTF8&seller=%s&isAmazonFulfilled=1' % seller_id, timeout=15)
+            print('https://www.amazon.com/sp?ie=UTF8&seller=%s&isAmazonFulfilled=1' % seller_id,res.status_code)
             if res.status_code == 200:
                 return res
+            else:
+                time.sleep(5)
+                continue
         except Exception as e:
             print(e)
             time.sleep(5)
             continue
 
 def get_page_count(page_size=100):
-    sellerbases = SellerBase.objects.all().order_by("-id")
+    seven_days = timezone.now() + timedelta(days=-7)
+    sellerbases = SellerBase.objects.filter(mod_time__lt = seven_days).order_by("-id").exclude(country='CN')
     all_page = Paginator(sellerbases, page_size)
-    return all_page.count
+    return all_page.num_pages
 
 def get_page_data(page,page_size=100):
-    sellerbases = SellerBase.objects.all().order_by("-id")
+    seven_days = timezone.now() + timedelta(days=-7)
+    sellerbases = SellerBase.objects.filter(mod_time__lt = seven_days).order_by("-id").exclude(country='CN')
     all_page = Paginator(sellerbases,page_size)
     page_datas = all_page.page(page)
     return page_datas
 
 page_count = get_page_count()
+
 for page in range(1,page_count):
     page_datas = get_page_data(page)
     print(page, page_count)
@@ -58,12 +65,18 @@ for page in range(1,page_count):
         crawl_day = (timezone.now() - sellerbase.mod_time).days
         add_mod_day = (sellerbase.add_time - sellerbase.mod_time).days
         seller_id = sellerbase.seller_id
+        if seller_id == '':
+            continue
         if add_mod_day == 0 or crawl_day >= 7:
             res = get_page_content(seller_id)
             selector = etree.HTML(res.text)
             title = selector.xpath("//title/text()")
             #print(''.join(selector.xpath('//*[@id="sellerName-rd"]/text()')).replace("👏",''))
-            sellerbase.brand_name = ''.join(selector.xpath('//*[@id="sellerName-rd"]/text()')).replace("👏",'').replace('💥','').strip()
+            sellerbase.brand_name = ''.join(selector.xpath('//*[@id="sellerName-rd"]/text()'))
+            brand_name_replace_arr = ['👏','💥','👍','🌲','💚','💗','🎄','✨','💲','❗'] #替换特殊字符
+            for s in brand_name_replace_arr:
+                sellerbase.brand_name = sellerbase.brand_name.replace(s,'').strip()
+
             ratings_infos = selector.xpath('//table[@id="feedback-summary-table"]//tr[5]//td//text()')
             if len(ratings_infos) == 5:
                 sellerbase.last_days_30_ratings = ratings_infos[1].replace(",","")
