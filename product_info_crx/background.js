@@ -102,7 +102,7 @@ let detailRequest = {
                 }
 
                 if (this.state.length == 4){
-                    chrome_reload(5000);
+                    //chrome_reload(5000);
                 }
                 }).catch(e => {
                     if (e.status === 404) {

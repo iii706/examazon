@@ -10,6 +10,9 @@ import redis
 from django.conf import settings
 import json
 
+#过滤关注的类目
+FILTER_CAT = ['Home & Kitchen','Health & Household','Automotive','Tools & Home Improvement','Kitchen & Dining']
+
 def get_list_url(request):
     urls = Url.objects.all().order_by("id")
     ret_urls = []
@@ -261,7 +264,7 @@ def product_content_post(request):
     if asin != "": #ret为0，1都要删除asin的key
         settings.REDIS_CONN.zrem(settings.PRODUCT_WAIT,asin)
 
-    if cat != "#NA" and data_ret == 1:
+    if cat != "#NA" and cat in FILTER_CAT and  data_ret == 1:
         p,b = Product.objects.get_or_create(asin=asin,defaults=defaults)
         print("查找结果：",p,b)
         if b == False:

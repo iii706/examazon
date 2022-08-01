@@ -66,7 +66,7 @@ function paserDesc(str,mobile_flag){
     var ret_datas = [];
     for (var i = 0; i<= rets.length; i++){
         var new_texts = $(rets[i]).text();
-        //console.log("文本内容：",i,new_texts);
+        console.log("文本内容：",i,new_texts);
         new_texts = new_texts.replace(/\n/gm,"");
         new_texts = new_texts.replace("‎ ","")
         new_texts = new_texts.replace(" ‏","")
@@ -101,13 +101,19 @@ function paserDesc(str,mobile_flag){
 
                 //console.log("文本内容：",new_texts);
                 if(new_texts.indexOf("Best Sellers Rank") != -1){
-                    var rank = $.trim(new_texts.replace("Best Sellers Rank","").split(' in ')[0].replace('#', '').replace(',', ''))
+                    var rank = $.trim(new_texts.replace("Best Sellers Rank","").split(' in ')[0].replace('#', '').replace(',', '').replace(',', ''))
                     rank = parseInt(rank)
                     console.log("rank是：",rank)
                     if(rank >= max_rank){ //设置最大的排名：
                         return "";
                     }
                 }
+
+                if(new_texts.indexOf("Best Sellers Rank") != -1){
+
+
+                }
+
                 if(new_texts.indexOf("Date First Available") != -1){
                     var add_date_year = $.trim(new_texts.replace("Date First Available",'').split(",")[1])
                     //console.log("上架年份是：",add_date_year)
