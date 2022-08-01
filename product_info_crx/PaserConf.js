@@ -66,7 +66,7 @@ function paserDesc(str,mobile_flag){
     var ret_datas = [];
     for (var i = 0; i<= rets.length; i++){
         var new_texts = $(rets[i]).text();
-        console.log("文本内容：",i,new_texts);
+        //console.log("文本内容：",i,new_texts);
         new_texts = new_texts.replace(/\n/gm,"");
         new_texts = new_texts.replace("‎ ","")
         new_texts = new_texts.replace(" ‏","")

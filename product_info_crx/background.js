@@ -102,7 +102,7 @@ let detailRequest = {
                 }
 
                 if (this.state.length == 4){
-                    //chrome_reload(5000);
+                    chrome_reload(5000);
                 }
                 }).catch(e => {
                     if (e.status === 404) {
@@ -155,8 +155,8 @@ function callback(res){
             }
             var request_obj = {
                 request:f1,
-                //asin:asins[i],
-                asin:'B09TBJ2T6S',
+                asin:asins[i],
+                //asin:'B09TBJ2T6S',
             }
             detailRequest.pushQueue(request_obj);
         }
