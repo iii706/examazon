@@ -172,7 +172,7 @@ fetch(get_asin_url).then(
     res=>callback(res)
 );
 
-
+chrome_reload(50000)
 
 
 

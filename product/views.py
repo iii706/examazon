@@ -173,7 +173,6 @@ def add_seller_info(request):
     if asin != '' and data_ret == 1:
         seller_id = data["seller_id"]
         SellerBase.objects.get_or_create(seller_id=seller_id)
-        settings.REDIS_BL.bfMAdd(settings.SELLER_FILTER, asin)
         settings.REDIS_CONN.srem(settings.SELLER_WAIT, asin)
         return HttpResponse(json.dumps({"msg": 1, 'ret': data_ret}))
 
@@ -182,8 +181,7 @@ def product_content_post(request):
     data_ret = data['ret']
     asin = data['asin']
     if data_ret == 2:  #404的asin返回
-        settings.REDIS_BL.cfAddNX(settings.DETSIL_URL_FILTER, asin)
-        settings.REDIS_CONN.srem(settings.DETAIL_URL_QUEUE, asin)
+        settings.REDIS_CONN.zrem(settings.PRODUCT_WAIT,asin)
         return HttpResponse(json.dumps({"msg": 0}))
 
     #print("asin",asin)
