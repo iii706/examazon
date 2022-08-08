@@ -11,6 +11,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "AmazonProductsScout.settings")
 django.setup()
 #条件设定
 REVIEW_COUNTS = 600
+PAGE_COUNT = 15
 
 from product.models import SellerBase,SellerDetail
 from django.utils import timezone
@@ -58,6 +59,9 @@ def get_page_count(url):
             print(res.status_code)
             if res.status_code == 200:
                 selector = etree.HTML(res.text)
+                # with open('asin.html','a+',encoding='utf-8') as f:
+                #     f.write(res.text)
+                # exit()
                 results = selector.xpath('//div[@class="a-section a-spacing-small a-spacing-top-small"]/span/text()')
                 print(results)
                 if len(results) > 0:
@@ -68,7 +72,7 @@ def get_page_count(url):
                     #print(products_count)
                     page_count = int(int(products_count) / 16 + 1) if int(int(products_count) / 16 + 1) > 1 else int(
                         int(products_count) / 16 + 1) + 1
-                    end_page = page_count if page_count <= 50 else 50
+                    end_page = page_count if page_count <= PAGE_COUNT else PAGE_COUNT
                     return end_page
                 else:
                     print('找不到产品，请检查ip是否是中国的ip')
