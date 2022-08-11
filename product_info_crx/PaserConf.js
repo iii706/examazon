@@ -152,6 +152,8 @@ function product_extract(jqueryObj,selector,key,mobile_flag){
                     var datas = paserDesc(ret.html(),mobile_flag)
                     //console.log(datas);
 					return datas;
+				} else {
+				    return '';
 				}
 			}
 

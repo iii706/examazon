@@ -18,6 +18,10 @@ from django.utils import timezone
 from django.core.paginator import Paginator
 from django.conf import settings
 
+from change import *
+
+
+
 
 def get_page_content(url):
     while True:
@@ -66,7 +70,7 @@ def get_page_count(url):
                 print(results)
                 if len(results) > 0:
 
-                    products_count = results[0].replace('results', '').split('over')[-1].split("of")[-1].replace(',', '').strip()
+                    products_count = results[0].replace('results', '').split('over')[-1].split("of")[-1].replace('result', '').replace(',', '').strip()
                     sellerbase.last_product_counts = products_count
                     sellerbase.save()
                     #print(products_count)
@@ -76,7 +80,10 @@ def get_page_count(url):
                     return end_page
                 else:
                     print('找不到产品，请检查ip是否是中国的ip')
-                    return False
+                    change_ip('US')
+                    continue
+            elif res.status_code == 503:
+                change_ip('US')
             else:
                 time.sleep(5)
                 continue
@@ -86,14 +93,14 @@ def get_page_count(url):
             continue
 def get_seller_page_count(page_size=100):
     seven_days = timezone.now() + timedelta(days=-7)
-    sellerbases = SellerBase.objects.filter(last_product_counts=0,last_days_30_ratings__gt = 100).order_by("-id").exclude(country='CN')
+    sellerbases = SellerBase.objects.filter(last_product_counts=0,last_days_30_ratings__gt = 50).order_by("-id").exclude(country='CN')
     all_page = Paginator(sellerbases, page_size)
     return all_page.num_pages
 
 def get_seller_page_data(page,page_size=100):
     seven_days = timezone.now() + timedelta(days=-7)
     sellerbases = SellerBase.objects.filter(last_product_counts=0,
-                                            last_days_30_ratings__gt=100).order_by("-id").exclude(country='CN')
+                                            last_days_30_ratings__gt=50).order_by("-id").exclude(country='CN')
     all_page = Paginator(sellerbases,page_size)
     page_datas = all_page.page(page)
     return page_datas
@@ -102,7 +109,7 @@ def get_seller_page_data(page,page_size=100):
 
 
 
-
+change_ip('US')
 sell_page_count = get_seller_page_count()
 print("需要采集的卖家数总页数：",sell_page_count)
 
@@ -149,6 +156,3 @@ for seller_page in range(1,sell_page_count):
                     today_score = int(time.mktime(datetime.now().timetuple()))
                     pipe.zadd(settings.PRODUCT_WAIT, {asin: today_score}, nx=True, ch=True)  # 加进去待采集队列，score为当前时间戳
                 pipe.execute()
-
-# with open('asin.html','a+',encoding='utf-8') as f:
-#     f.write(res.text)

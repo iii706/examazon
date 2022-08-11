@@ -43,14 +43,14 @@ def get_page_content(seller_id):
             continue
 
 def get_page_count(page_size=100):
-    seven_days = timezone.now() + timedelta(days=-7)
-    sellerbases = SellerBase.objects.filter(mod_time__lt = seven_days).order_by("-id").exclude(country='CN')
+    seven_days = timezone.now() + timedelta(days=-100)
+    sellerbases = SellerBase.objects.filter(last_product_counts=0).order_by("-id").exclude(country='CN')
     all_page = Paginator(sellerbases, page_size)
     return all_page.num_pages
 
 def get_page_data(page,page_size=100):
     seven_days = timezone.now() + timedelta(days=-7)
-    sellerbases = SellerBase.objects.filter(mod_time__lt = seven_days).order_by("-id").exclude(country='CN')
+    sellerbases = SellerBase.objects.filter(last_product_counts=0).order_by("-id").exclude(country='CN')
     all_page = Paginator(sellerbases,page_size)
     page_datas = all_page.page(page)
     return page_datas

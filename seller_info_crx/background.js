@@ -122,7 +122,7 @@ let detailRequest = {
                             }
                         }
                     }
-                    if(asins.size > 100000){
+                    if(asins.size > 0){
                         var asin_str = Array.from(asins).join("|")
                         console.log("关联的asins:",asin_str)
                         let options = {

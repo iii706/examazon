@@ -1,6 +1,19 @@
 var start_url = "http://127.0.0.1:8000/product/get_list_url/"
 var add_seller_asins_url = "http://127.0.0.1:8000/product/add_seller_asins/"
 
+
+function chrome_reload(time){
+    function sleep (time) {
+        return new Promise((resolve) => setTimeout(resolve, time));
+    }
+
+    // 用法
+    sleep(time).then(() => {
+        chrome.runtime.reload()
+    })
+}
+
+
 let listRequest = {
     state: ['token_list'],  // 默认三个令牌 最多可并发发送三次请求
     queue: [],   // 请求队列
@@ -95,7 +108,7 @@ let listRequest = {
                         this.start(); // 重新开始执行队列
                     }
                     if(this.state.length == 1){
-                        chrome.runtime.reload();
+                        chrome_reload(3000);
                     }
                 });
 
@@ -141,5 +154,14 @@ fetch(start_url).then(
 ).then(
     res=>callback(res)
 )
+
+function sleep (time) {
+  return new Promise((resolve) => setInterval(resolve, time));
+}
+
+// 用法
+sleep(50000).then(() => {
+   chrome.runtime.reload()
+})
 
 
