@@ -52,6 +52,7 @@ while True:
         seller_id = sellerbase.seller_id
         print(seller_id)
         if seller_id == '':
+            sellerbase.delete()
             continue
         res = get_page_content(seller_id)
         selector = etree.HTML(res.text)

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 # Create your views here.
 from lxml import etree
 import re,time
@@ -12,6 +12,19 @@ import json
 
 #过滤关注的类目
 FILTER_CAT = ['Home & Kitchen','Health & Household','Automotive','Tools & Home Improvement','Kitchen & Dining']
+
+#ajax过滤卖家不显示
+def sellbase_nodisplay(request,sid):
+
+    print(sid)
+    try:
+        sellbase = SellerBase.objects.get(id=sid)
+        sellbase.display = False
+        #sellbase.save()
+        return HttpResponse(json.dumps({"msg": 1}))
+    except Exception as e:
+        return HttpResponse(json.dumps({"msg": 0}))
+
 
 def get_list_url(request):
     urls = Url.objects.all().order_by("id")

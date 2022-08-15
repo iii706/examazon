@@ -48,7 +48,10 @@ class ProductAdmin(admin.ModelAdmin):
 
     IMAGE.short_description = "产品详情"
 
-
+    class Media:
+        js = (
+            'js/product_admin.js',  # project static folder
+        )
 
 
 
@@ -61,6 +64,26 @@ class RankAdmin(admin.ModelAdmin):
 
 @admin.register(SellerBase)
 class SellerBaseAdmin(admin.ModelAdmin):
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(display=True).exclude(country='CN')
+
+
+    def pass_audit_str(self,obj):
+        parameter_str = 'id={}'.format(str(obj.id))
+        color_code = ''
+        btn_str = '<span class="btn btn-xs btn-danger myspan_select" href="{}" title="123">' \
+                  '<input name="不再关注"' \
+                  'type="button" id="passButton" ' \
+                  'title="passButton" value="不再关注">' \
+                  '</span>'
+        #return format_html(btn_str, '/pass_audit/?{}'.format(parameter_str))
+        return format_html(btn_str,'')
+
+    pass_audit_str.short_description = '操作'
+
+
 
     class CountryListFilter(admin.SimpleListFilter):
         title = _(u'卖家所在国家')
@@ -78,14 +101,19 @@ class SellerBaseAdmin(admin.ModelAdmin):
             if self.value() == '1':
                 return queryset.filter().exclude(country='CN')
 
-    list_display = ['id','SELL_LINK','brand_name','country','last_product_counts','last_days_30_ratings','last_days_90_ratings','last_year_ratings','last_life_ratings','show_add_time','show_mod_time']
+    list_display = ['id','SELL_LINK','pass_audit_str','brand_name','country','last_product_counts','last_days_30_ratings','last_days_90_ratings','last_year_ratings','last_life_ratings','show_add_time','show_mod_time']
     # 激活自定义过滤器
-    list_filter = (CountryListFilter,)
+    #list_filter = (CountryListFilter,)
 
     def SELL_LINK(self,obj):
         return format_html("<a href='https://www.amazon.com/s?me={seller_id}&marketplaceID=ATVPDKIKX0DER' target='blank'>{seller_id}</a>",seller_id=obj.seller_id)
 
     SELL_LINK.short_description = "卖家链接"
+
+    class Media:
+        js = (
+            'js/guarded_admin.js',  # project static folder
+        )
 
 
 @admin.register(Review)

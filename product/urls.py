@@ -11,4 +11,5 @@ urlpatterns = [
     path('get_product_asins/',views.get_product_asins,name='get_product_asins'),
     path('add_product_asins/',views.add_product_asins,name='add_product_asins'),
     path('get_list_url/',views.get_list_url,name='get_list_url'),
+    path('sellbase_nodisplay/<int:sid>',views.sellbase_nodisplay,name='sellbase_nodisplay'),
 ]
