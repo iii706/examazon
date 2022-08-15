@@ -44,7 +44,12 @@ def get_page_content(seller_id):
             continue
 
 while True:
-    sellerbases = SellerBase.objects.filter(last_product_counts=0).order_by("mod_time").exclude(country='CN')[:1]
+    try:
+        sellerbases = SellerBase.objects.filter(last_product_counts=0,display=True).order_by("mod_time").exclude(country='CN')[:1]
+    except Exception as e:
+        print('获取远程数据错误！！',e)
+        time.sleep(5)
+        continue
     if len(sellerbases) > 0:
         sellerbase = sellerbases[0]
         crawl_day = (timezone.now() - sellerbase.mod_time).days

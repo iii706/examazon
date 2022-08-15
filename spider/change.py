@@ -3,11 +3,7 @@ import time
 import requests
 import os
 import random
-# screenWidth, screenHeight = pyautogui.size()
-# print(screenWidth,screenHeight)
-#
-# #pyautogui.click('on.jpg')
-#
+import subprocess
 
 SLEEP = 60*3
 from datetime import datetime
@@ -72,7 +68,9 @@ def change_ip(country=None):
                 return False
 if __name__ == '__main__':
     while True:
+        subprocess.Popen('taskkill /F /im chrome.exe',shell=True)
         change_ip()
+        subprocess.Popen("C:\Program Files\Google\Chrome\Application\chrome.exe", shell=True)
         time.sleep(60 * 10)
 
 
