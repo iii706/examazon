@@ -67,7 +67,7 @@ class SellerBaseAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        return qs.filter(display=True).exclude(country='CN')
+        return qs.filter(display=True).exclude(country='CN',last_product_counts=0)
 
 
     def pass_audit_str(self,obj):
